@@ -221,13 +221,15 @@ def get_coordinates_for_recibo(my_recibo_info: dict) -> dict:
         'dupl_company_domicilio_x': base_duplicate_x,
         'dupl_company_cuit_x': base_duplicate_x,
 
-        'liquidacion_info_x': my_recibo_info['liquidacion_info_x'] + my_recibo_info['liquidacion_info_width'] / 4,
+        'liquidacion_info_x': my_recibo_info['liquidacion_info_x'] + my_recibo_info['liquidacion_info_width'] / 4 - 0.5 * cm,
         'liquidacion_info_y': first_line_y - 0.1 * cm,
         'periodo_x': my_recibo_info['liquidacion_info_x'] + my_recibo_info['liquidacion_info_width'] / 4,
         'periodo_y': first_line_y - 0.8 * cm,
 
-        'dupl_liq_info_x': my_recibo_info['liquidacion_info_x_duplicate'] + my_recibo_info['liquidacion_info_width'] / 4,
-        'dupl_periodo_x': my_recibo_info['liquidacion_info_x_duplicate'] + my_recibo_info['liquidacion_info_width'] / 4,
+        'dupl_liq_info_x': my_recibo_info[
+            'liquidacion_info_x_duplicate'] + my_recibo_info['liquidacion_info_width'] / 4 - 0.5 * cm,
+        'dupl_periodo_x': my_recibo_info[
+            'liquidacion_info_x_duplicate'] + my_recibo_info['liquidacion_info_width'] / 4,
 
         'nombre_x': base_x,
         'nombre_y': starting_y_employee_info,
