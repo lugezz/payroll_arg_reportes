@@ -221,13 +221,13 @@ def get_coordinates_for_recibo(my_recibo_info: dict) -> dict:
         'dupl_company_domicilio_x': base_duplicate_x,
         'dupl_company_cuit_x': base_duplicate_x,
 
-        'liquidacion_info_x': my_recibo_info['liquidacion_info_x'] + my_recibo_info['liquidacion_info_width'] / 4 - 0.5 * cm,
+        'liquidacion_info_x': my_recibo_info['liquidacion_info_x'] + my_recibo_info['liquidacion_info_width'] / 4,
         'liquidacion_info_y': first_line_y - 0.1 * cm,
         'periodo_x': my_recibo_info['liquidacion_info_x'] + my_recibo_info['liquidacion_info_width'] / 4,
         'periodo_y': first_line_y - 0.8 * cm,
 
         'dupl_liq_info_x': my_recibo_info[
-            'liquidacion_info_x_duplicate'] + my_recibo_info['liquidacion_info_width'] / 4 - 0.5 * cm,
+            'liquidacion_info_x_duplicate'] + my_recibo_info['liquidacion_info_width'] / 4,
         'dupl_periodo_x': my_recibo_info[
             'liquidacion_info_x_duplicate'] + my_recibo_info['liquidacion_info_width'] / 4,
 
@@ -325,13 +325,26 @@ def draw_empleado(c: canvas.Canvas, coordinates: dict, info_recibo: dict, legajo
 
     # Liquidación Info ----------------------------------------------------------------------------
     # Original
-    c.drawString(coordinates['liquidacion_info_x'], coordinates['liquidacion_info_y'],
-                 info_recibo['tipo_liquidacion'])
+    # Asigna el texto del tipo de liquidación
+    text = info_recibo['tipo_liquidacion']
+    offset_x = -0.4 * cm
+
+    # Original - Dibuja "Liquidacion Final" centrado, o usa drawString para otros casos
+    if text == 'Liquidación Final':
+        c.drawString(coordinates['liquidacion_info_x'] + offset_x, coordinates['liquidacion_info_y'], text)
+    else:
+        c.drawString(coordinates['liquidacion_info_x'], coordinates['liquidacion_info_y'], text)
+
+    # Dibuja el período en el recibo original
     c.drawString(coordinates['periodo_x'], coordinates['periodo_y'], info_recibo['periodo'])
 
-    # Duplicate
-    c.drawString(coordinates['dupl_liq_info_x'], coordinates['liquidacion_info_y'],
-                 info_recibo['tipo_liquidacion'])
+    # Duplicate - Dibuja "Liquidacion Final" centrado en la copia, o usa drawString para otros casos
+    if text == 'Liquidación Final':
+        c.drawString(coordinates['dupl_liq_info_x'] + offset_x, coordinates['liquidacion_info_y'], text)
+    else:
+        c.drawString(coordinates['dupl_liq_info_x'], coordinates['liquidacion_info_y'], text)
+
+    # Dibuja el período en la copia del recibo
     c.drawString(coordinates['dupl_periodo_x'], coordinates['periodo_y'], info_recibo['periodo'])
 
     # End of Liquidación Info ---------------------------------------------------------------------
