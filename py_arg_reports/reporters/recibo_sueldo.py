@@ -300,6 +300,30 @@ def get_coordinates_for_recibo(my_recibo_info: dict) -> dict:
     return resp
 
 
+def draw_liquidacion_info(c: canvas.Canvas, coordinates: dict, info_recibo: dict) -> None:
+    """Dibuja la información de la liquidación en el recibo."""
+    text = info_recibo['tipo_liquidacion']
+    offset_x = -0.4 * cm
+
+    # Original - Dibuja "Liquidación Final" centrado o usa drawString para otros casos
+    if text == 'Liquidación Final':
+        c.drawString(coordinates['liquidacion_info_x'] + offset_x, coordinates['liquidacion_info_y'], text)
+    else:
+        c.drawString(coordinates['liquidacion_info_x'], coordinates['liquidacion_info_y'], text)
+
+    # Dibuja el período en el recibo original
+    c.drawString(coordinates['periodo_x'], coordinates['periodo_y'], info_recibo['periodo'])
+
+    # Duplicate - Dibuja "Liquidación Final" centrado en la copia o usa drawString para otros casos
+    if text == 'Liquidación Final':
+        c.drawString(coordinates['dupl_liq_info_x'] + offset_x, coordinates['liquidacion_info_y'], text)
+    else:
+        c.drawString(coordinates['dupl_liq_info_x'], coordinates['liquidacion_info_y'], text)
+
+    # Dibuja el período en la copia del recibo
+    c.drawString(coordinates['dupl_periodo_x'], coordinates['periodo_y'], info_recibo['periodo'])
+
+
 def draw_empleado(c: canvas.Canvas, coordinates: dict, info_recibo: dict, legajo: str) -> str:
     # Variables Base ----------------------------------------------------------------------------
     base_line_between = 0.5 * cm
@@ -324,28 +348,7 @@ def draw_empleado(c: canvas.Canvas, coordinates: dict, info_recibo: dict, legajo
     # End of Company name -------------------------------------------------------------------------
 
     # Liquidación Info ----------------------------------------------------------------------------
-    # Original
-    # Asigna el texto del tipo de liquidación
-    text = info_recibo['tipo_liquidacion']
-    offset_x = -0.4 * cm
-
-    # Original - Dibuja "Liquidacion Final" centrado, o usa drawString para otros casos
-    if text == 'Liquidación Final':
-        c.drawString(coordinates['liquidacion_info_x'] + offset_x, coordinates['liquidacion_info_y'], text)
-    else:
-        c.drawString(coordinates['liquidacion_info_x'], coordinates['liquidacion_info_y'], text)
-
-    # Dibuja el período en el recibo original
-    c.drawString(coordinates['periodo_x'], coordinates['periodo_y'], info_recibo['periodo'])
-
-    # Duplicate - Dibuja "Liquidacion Final" centrado en la copia, o usa drawString para otros casos
-    if text == 'Liquidación Final':
-        c.drawString(coordinates['dupl_liq_info_x'] + offset_x, coordinates['liquidacion_info_y'], text)
-    else:
-        c.drawString(coordinates['dupl_liq_info_x'], coordinates['liquidacion_info_y'], text)
-
-    # Dibuja el período en la copia del recibo
-    c.drawString(coordinates['dupl_periodo_x'], coordinates['periodo_y'], info_recibo['periodo'])
+    draw_liquidacion_info(c, coordinates, info_recibo)
 
     # End of Liquidación Info ---------------------------------------------------------------------
 
