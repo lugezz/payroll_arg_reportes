@@ -146,12 +146,13 @@ def get_info_final_for_recibo(api_dict: dict) -> dict:
         cuiles[legajo] = cuil
 
         categorias[legajo] = empleado["categoria"]
-        fecha_ingreso = api_dict["empleados"][0]["fecha_ingreso"]
-        fecha_ingreso = formatted_date_str(fecha_ingreso)
-        fechas_ingreso[legajo] = fecha_ingreso
-        fecha_ingreso_2 = api_dict["empleados"][0]["fecha_ingreso_2"]
+
+        fecha_ingreso = empleado["fecha_ingreso"]
+        fechas_ingreso[legajo] = formatted_date_str(fecha_ingreso)
+        fecha_ingreso_2 = empleado.get("fecha_ingreso_2")
         if fecha_ingreso_2:
             fechas_ingreso_2[legajo] = formatted_date_str(fecha_ingreso_2)
+
         contratos[legajo] = empleado["contrato"]
         obras_sociales[legajo] = empleado["obra_social"]
         areas[legajo] = empleado["area"]
@@ -364,7 +365,7 @@ def draw_empleado(c: canvas.Canvas, coordinates: dict, info_recibo: dict, legajo
     contrato = info_recibo['contratos'][legajo]
     obra_social = info_recibo['obras_sociales'][legajo]
     cuil = info_recibo['cuiles'][legajo]
-    fecha_ingreso = info_recibo['fechas_ingreso'][legajo]
+    fecha_ingreso = info_recibo['fechas_ingreso'].get(legajo)
     fecha_ingreso_2 = info_recibo['fechas_ingreso_2'].get(legajo)
     basico = info_recibo['basicos'][legajo]
     lugar_trabajo = info_recibo['lugares_trabajo'][legajo]
