@@ -20,7 +20,7 @@ def descargar_libro(json_data: dict, output_path: str, filename: str) -> tuple:
          - False, error: si falla
          - final_path, None: si todo salió bien
     """
-    log.info(f'descargar_libro :: {output_path} :: {filename}')
+    log.info(f'descargar_libro:: {output_path}:: {filename}')
     try:
         info_recibo = translate_data(json_data)
     except Exception as e:
