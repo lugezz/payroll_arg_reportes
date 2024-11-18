@@ -18,9 +18,9 @@ def descargar_libro(json_data: dict, output_path: str, filename: str) -> tuple:
     """ Descarga el libro sueldo en formato PDF,
         Retorna una tupla:
          - False, error: si falla
-         - True, None: si todo salió bien
+         - final_path, None: si todo salió bien
     """
-
+    log.info(f'descargar_libro :: {output_path} :: {filename}')
     try:
         info_recibo = translate_data(json_data)
     except Exception as e:
@@ -32,12 +32,16 @@ def descargar_libro(json_data: dict, output_path: str, filename: str) -> tuple:
     if not Path(output_path).exists():
         # create the folder
         Path(output_path).mkdir(parents=True, exist_ok=True)
-    my_file_path = Path(output_path) / f'{filename}.pdf'
+    my_file_path = Path(output_path) / filename
+    my_file_path_str = str(my_file_path)
+    # si filename no termina con .pdf, agregarlo
+    if not my_file_path_str.lower().endswith('.pdf'):
+        my_file_path_str += '.pdf'
     log.info(f'Generando libro sueldo en {my_file_path}')
 
     # Mi PDF general donde voy a agregar los bloques
     PDF = CanvasPDF(
-        file_path=str(my_file_path),
+        file_path=my_file_path_str,
         title='Libro Sueldo', units=cm,
         data=info_recibo,
     )
@@ -78,7 +82,7 @@ def descargar_libro(json_data: dict, output_path: str, filename: str) -> tuple:
 
     PDF.finish_page()
     PDF.save()
-    return True, None
+    return my_file_path_str, None
 
 
 def draw_header(PDF: CanvasPDF):
