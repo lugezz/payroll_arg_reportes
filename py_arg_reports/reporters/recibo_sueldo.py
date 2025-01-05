@@ -634,6 +634,8 @@ def draw_recibo(my_file_path, recibo_info):
         filename=my_file_path,
         pagesize=landscape(A4),
     )
+    c.setTitle("Recibo de Sueldo")
+    c.setAuthor("Payroll311")
 
     # Get info from recibo_info
     info_recibo = get_info_final_for_recibo(recibo_info)
