@@ -49,14 +49,13 @@ class TestDownloadRecibo(unittest.TestCase):
     def test_descarga_recibo_1(self):
         """ Prueba la descarga del archivo
         """
-        resp_descarga = descargar_recibo(
+        full_path, error = descargar_recibo(
             json_data=self.short_json,
             output_path=self.temp_folder,
             filename='recibo_prueba_1',
         )
 
-        self.assertEqual(resp_descarga, '')
-        full_path = self.temp_folder + 'recibo_prueba_1.pdf'
+        self.assertIsNone(error)
 
         # Check if the file exists
         self.assertTrue(os.path.exists(full_path))
@@ -72,20 +71,19 @@ class TestDownloadRecibo(unittest.TestCase):
     def test_descarga_recibo_2(self):
         """ Prueba la descarga del archivo full
         """
-        resp_descarga = descargar_recibo(
+        full_path, error = descargar_recibo(
             json_data=self.long_json,
             output_path=self.temp_folder,
             filename='recibo_prueba_2',
         )
 
-        self.assertEqual(resp_descarga, '')
-        full_path = self.temp_folder + 'recibo_prueba_2.pdf'
+        self.assertIsNone(error)
 
         # Check if the file exists
         self.assertTrue(os.path.exists(full_path))
 
         # Check the number of pages in the PDF file
-        with open(self.temp_folder + 'recibo_prueba_2.pdf', 'rb') as file:
+        with open(full_path, 'rb') as file:
             # pdf_reader = PyPDF2.PdfFileReader(f)
             pdf = PdfReader(file)
             num_sheets = len(pdf.pages)
@@ -95,24 +93,24 @@ class TestDownloadRecibo(unittest.TestCase):
     def test_descarga_empty_json(self):
         """ Prueba la descarga del archivo para un json vacío
         """
-        resp_descarga = descargar_recibo(
+        _, error = descargar_recibo(
             json_data=self.empty_json,
             output_path=self.temp_folder,
             filename='recibo_prueba_3',
         )
 
-        self.assertEqual(resp_descarga, 'No se puede descargar el recibo, no hay datos')
+        self.assertEqual(error, 'No se puede descargar el recibo, no hay datos')
 
     def test_key_missing_json(self):
         """ Prueba la descarga del archivo para un json sin la key 'results'
         """
-        resp_descarga = descargar_recibo(
+        _, error = descargar_recibo(
             json_data=self.key_missing_json,
             output_path=self.temp_folder,
             filename='recibo_prueba_5',
         )
 
-        self.assertEqual(resp_descarga, 'No se puede descargar el recibo, no se observa totales_liquidacion en los datos')
+        self.assertEqual(error, 'No se puede descargar el recibo, no se observa totales_liquidacion en los datos')
 
 
 if __name__ == '__main__':
