@@ -1,5 +1,6 @@
+import logging
 import os
-
+from pathlib import Path
 from numero_a_letras import numero_a_letras
 from reportlab.lib.pagesizes import A4, landscape
 from reportlab.lib.units import cm
@@ -16,6 +17,7 @@ from py_arg_reports.tools.recibos_utils import (
 )
 
 
+log = logging.getLogger(__name__)
 FONT_FAMILY = config_constants['FONT_FAMILY']
 FONT_FAMILY_BOLD = config_constants['FONT_FAMILY_BOLD']
 FONT_SIZE_MAIN = config_constants['FONT_SIZE_MAIN']
@@ -596,14 +598,15 @@ def draw_empleado(c: canvas.Canvas, coordinates: dict, info_recibo: dict, legajo
 
 def descargar_recibo(json_data: dict, output_path: str, filename: str) -> str:
     """ Descarga el recibo de sueldo en formato PDF,
-        Retorna error si lo hay
+        Retorna:
+          - final_path, None if OK
+          - False, error message if error
     """
-    resp = ''
 
     recibo_info = get_recibo_info(json_data)
     if recibo_info.get("error"):
         error_detail = recibo_info["error"]
-        return error_detail
+        return False, error_detail
 
     # Cada liquidación va a tener su propia carpeta en download
     my_path = output_path
@@ -612,8 +615,20 @@ def descargar_recibo(json_data: dict, output_path: str, filename: str) -> str:
 
     if not filename.lower().endswith('.pdf'):
         filename += '.pdf'
-    my_file_path = f'{my_path}{filename}'
+    my_file_path = Path(my_path) / filename
+    my_file_path = str(my_file_path)
+    log.info(f"Descargando recibo en {my_file_path}")
 
+    try:
+        draw_recibo(my_file_path, recibo_info)
+    except Exception as e:
+        log.error(f"Error al renderizar recibo: {e}")
+        return False, "Error al renderizar el recibo"
+
+    return my_file_path, None
+
+
+def draw_recibo(my_file_path, recibo_info):
     # Create a canvas
     c = canvas.Canvas(
         filename=my_file_path,
@@ -653,5 +668,4 @@ def descargar_recibo(json_data: dict, output_path: str, filename: str) -> str:
         # End of Loop through all the employees ------------------------------------------------------
         # --------------------------------------------------------------------------------------------
     c.save()
-
-    return resp
+    log.info(f"Recibo finalizado en {my_file_path}")
