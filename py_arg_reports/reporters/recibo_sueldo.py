@@ -609,7 +609,10 @@ def descargar_recibo(json_data: dict, output_path: str, filename: str) -> str:
     my_path = output_path
     if not os.path.exists(my_path):
         os.makedirs(my_path)
-    my_file_path = f'{my_path}{filename}.pdf'
+
+    if not filename.lower().endswith('.pdf'):
+        filename += '.pdf'
+    my_file_path = f'{my_path}{filename}'
 
     # Create a canvas
     c = canvas.Canvas(
